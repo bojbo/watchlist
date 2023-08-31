@@ -91,7 +91,6 @@ def admin(username, password):
 
     user = User.query.filter_by(username=username).first() # 查询用户名是否存在
     if user is not None:
-        print(user.username)
         click.echo('Updating user...')
         user.username = username
         user.set_password(password) # 设置密码
@@ -153,7 +152,7 @@ def login():
             flash("Invalid input.")
             return redirect(url_for('login'))
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.first()
         # 验证用户名和密码是否一致
         if username == user.username and user.validate_password(password):
             login_user(user)
@@ -161,7 +160,7 @@ def login():
             return redirect(url_for('index')) # 重定向到主页
         
         flash('Invalid username or password.') # 如果验证失败，显示错误信息
-        return redirect(url_for('/login')) # 重定向到登录页
+        return redirect(url_for('login')) # 重定向到登录页
     
     return render_template('login.html')
 
@@ -189,7 +188,7 @@ def settings():
 
 
 # 用户登出
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 @login_required # 用于视图保护
 def logout():
     logout_user()
@@ -222,8 +221,8 @@ def edit(movie_id):
 # 删除电影条目
 @app.route('/movie/delete/<int:movie_id>', methods=['POST'])
 @login_required
-def delete(moive_id):
-    movie = Movie.query.get_or_404(moive_id)
+def delete(movie_id):
+    movie = Movie.query.get_or_404(movie_id)
     db.session.delete(movie)
     db.session.commit()
     flash("Item deleted.")
