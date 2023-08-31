@@ -1,6 +1,8 @@
 import unittest
 
-from app import app, db, Movie, User, forge, initdb
+from watchlist import app, db
+from watchlist.models import User, Movie
+from watchlist.commands import forge, initdb
 
 class WatchlistTestCase(unittest.TestCase):
     
@@ -263,12 +265,10 @@ class WatchlistTestCase(unittest.TestCase):
         
     # 测试更新管理员账户
     def test_admin_command_update(self):
-        users = User.query.all()
+        # users = User.query.all()
         # for user in users:
         #     print("user is ", user )
-        #     print("username is: ", user.username)
-            # username = user['username']
-            # print("user name is : %s", username)
+        #     print("username is: ", user.username))
         # 使用 args 参数给出完整的命令参数列表
         result = self.runner.invoke(args=['admin', '--username', 'test', '--password', '456'])
         self.assertIn('Updating user...', result.output)
